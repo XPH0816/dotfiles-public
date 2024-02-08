@@ -1,0 +1,25 @@
+alias=doskey $*
+
+docker=vctl $*
+
+lg=lazygit $*
+ls=lsd $*
+ll=lsd -l $*
+l=lsd -la $*
+
+pa=php artisan $*
+pm=php artisan make:$*
+pr=php artisan route:list
+ao=php artisan optimize
+ac=php artisan optimize:clear
+
+touch=type nul > $*
+
+cr=composer require $*
+mv=move $*
+cp=xcopy $*
+
+rm=del $*
+rmf=rd /s /q $*
+
+clear=cls
