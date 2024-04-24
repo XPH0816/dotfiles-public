@@ -30,13 +30,17 @@ IF "%STARSHIP_PATH%"=="" (
     echo "starship" not found in the PATH.
     echo "Installing starship..."
     winget install starship
-    
-    echo "Setting up starship..."
-    mklink %LOCALAPPDATA%\clink\starship.lua %cd%\.config\starship.lua
-
 ) ELSE (
     echo "starship" found in the PATH.
 )
+
+IF NOT EXIST %LOCALAPPDATA%\clink\starship.lua (
+    echo "Setting up starship..."
+    mklink %LOCALAPPDATA%\clink\starship.lua %cd%\.config\starship.lua
+) ELSE (
+    echo "starship already setup"
+)
+
 
 IF NOT EXIST "%USERPROFILE%\.config\starship.toml" (
     echo "starship.toml" not found.
