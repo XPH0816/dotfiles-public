@@ -7,12 +7,14 @@ if [ ! -d ~/.config ]; then
     mkdir ~/.config
 fi
 
-ln -sf {$PWD}/.config/nvim ~/.config/nvim
+echo "Linking Configuration File"
+ln -sf $PWD/.config/nvim ~/.config/nvim
+ln -sf $PWD/.config/starship.toml ~/.config/starship.toml
 
 # Link Tmux Configuration
 # If .tmux.conf exists, remove it
 
-ln -sf {$PWD}/.config/tmux/tmux.conf ~/.tmux.conf
+ln -sf $PWD/.config/tmux/tmux.conf ~/.tmux.conf
 
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     mkdir -p ~/.tmux/plugins
@@ -43,52 +45,102 @@ esac
 
 ARCH="${_oss}_${_cpu}"
 
+echo "Downloading LazyGit"
 curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_${ARCH}.tar.gz"
 tar xf lazygit.tar.gz lazygit
+
+echo "Installing LazyGit"
 if [ $(id -u) -ne 0 ]; then
     sudo install lazygit /usr/local/bin
 else
     install lazygit /usr/local/bin
 fi
 
+echo "Remove the redundant lazygit.tar.gz and lazygit"
 rm lazygit.tar.gz lazygit
 
 NVIM_ZIP="nvim.tar.gz"
+shell_name="$(basename "$SHELL")"
 
 case "$_oss" in
 Linux)
-    if [[ "$_cpu" == "x86_64" ]]; then
-        curl -LO $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+    case "$_cpu" in
+    x86_64)
+        echo "Downlaoding Neovim"
+        curl -Lo $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
         sudo rm -rf /opt/nvim
         sudo tar -C /opt -xzf $NVIM_ZIP
-    else
+        ;;
+    *)
+        echo "Install Neovim using make"
         git clone https://github.com/neovim/neovim
         git checkout stable
         cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
         sudo make install
-    fi
+        ;;
+    esac
     ;;
 Darwin)
-    if [[ "$_cpu" == "arm64" ]]; then
+    case "$_cpu" in
+    arm64)
+        echo "Downlaoding Neovim"
         curl -Lo $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-macos-arm64.tar.gz
         sudo rm -rf /opt/nvim
         sudo tar -C /opt -xzf $NVIM_ZIP
-    elif [[ "$_cpu" == "x86_64" ]]; then
+        ;;
+    x86_64)
+        echo "Downlaoding Neovim"
         curl -Lo $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-macos-x86_64.tar.gz
         sudo rm -rf /opt/nvim
         sudo tar -C /opt -xzf $NVIM_ZIP
-    else
+        ;;
+    *)
+        echo "Install Neovim using make"
         git clone https://github.com/neovim/neovim
         git checkout stable
         cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
         sudo make install
-    fi
+        ;;
+    esac
     ;;
 Windows)
+    echo "Install Neovim using make"
     git clone https://github.com/neovim/neovim
     git checkout stable
     cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
     sudo make install
     ;;
-*) err "Error: unsupport nvim" ;;
+*) err "Error: unsupport OS or CPU architecture for nvim" ;;
 esac
+
+rm $NVIM_ZIP
+
+case "$shell_name" in
+bash)
+    config_file=".bashrc"
+    ;;
+zsh)
+    config_file=".zshrc"
+    ;;
+*)
+    echo "Unsupported shell: $shell_name"
+    exit 1
+    ;;
+esac
+
+# Export the current path to the configuration file
+echo "export PATH=\"\$PATH:/opt/nvim-linux64/bin\"" >>~/"$config_file"
+
+# Source the configuration file to apply the changes immediately
+source ~/"$config_file"
+
+curl -sS https://starship.rs/install.sh | sh
+
+echo "Install Homebrew"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+#echo "Download and Install GCM"
+#curl -L https://aka.ms/gcm/linux-install-source.sh | sh
+#git-credential-manager configure
+#git config --global credential.credentialStore gpg
+#rm -rf git-credential-manager

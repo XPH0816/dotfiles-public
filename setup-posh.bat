@@ -81,7 +81,11 @@ IF "%STARSHIP_PATH%"=="" (
     echo "starship" found in the PATH.
 )
 
-IF NOT EXIST "%USERPROFILE%\.config\starship.toml" (
+IF NOT EXIST %USERPROFILE%\.starship (
+    mkdir %USERPROFILE%\.starship
+)
+
+IF NOT EXIST "%USERPROFILE%\.starship\starship.toml" (
     echo "starship.toml" not found.
     echo "Linking starship.toml..."
     mklink %USERPROFILE%\.starship\starship.toml %cd%\.starship\starship.toml
