@@ -57,5 +57,38 @@ if not exist "%USERPROFILE%\Documents\WindowsPowerShell" (
     md "%USERPROFILE%\Documents\WindowsPowerShell"
 )
 
+
+REM CHECK LSD PROGRAM IS INSTALLED
+FOR /F %%i IN ('where lsd') DO SET "LSD_PATH=%%i"
+
+REM CHECK STARSHIP PROGRAM IS INSTALLED
+FOR /F %%i IN ('where starship') DO SET "STARSHIP_PATH=%%i"
+
+REM Check if "lsd" is found in the PATH
+IF "%LSD_PATH%"=="" (
+    echo "lsd" not found in the PATH.
+    echo "Installing lsd..."
+    winget install --id lsd-rs.lsd
+) ELSE (
+    echo "lsd" found in the PATH.
+)
+
+IF "%STARSHIP_PATH%"=="" (
+    echo "starship" not found in the PATH.
+    echo "Installing starship..."
+    winget install starship
+) ELSE (
+    echo "starship" found in the PATH.
+)
+
+IF NOT EXIST "%USERPROFILE%\.config\starship.toml" (
+    echo "starship.toml" not found.
+    echo "Linking starship.toml..."
+    mklink %USERPROFILE%\.starship\starship.toml %cd%\.starship\starship.toml
+    echo "starship.toml" linked on %cd%\.starship\starship.toml.
+) ELSE (
+    echo "starship.toml" found.
+)
+
 echo "Creating Symbolic Link for PowerShell Profile"
 mklink "%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" %cd%\.config\powershell\Microsoft.PowerShell_profile.ps1
