@@ -5,13 +5,13 @@ add_newline = true
 
 # Change the default prompt format
 format = """\
-[╭╴](238)$env_var$all\
-$line_break[╰─](238)$character"""
+[╭╴](238)$env_var$all$character\
+$line_break[╰─](238)"""
 
 # Change the default prompt characters
 [character]
-success_symbol = "[](238)"
-error_symbol = "[](238)"
+success_symbol = "[](238)"
+error_symbol = "[](238)"
 
 # Shows an icon that should be included by zshrc script based on the distribution or os
 [env_var.STARSHIP_DISTRO]
@@ -30,13 +30,13 @@ show_always = false
 [directory]
 truncation_length = 3
 truncation_symbol = "…/"
-home_symbol = " ~"
+home_symbol = "󱁍 ~"
 read_only_style = "197"
 read_only = "  "
 format = "at [$path]($style)[$read_only]($read_only_style) "
 
 [git_branch]
-symbol = " "
+symbol = "󰘬 "
 format = "on [$symbol$branch]($style) "
 truncation_length = 4
 truncation_symbol = "…/"
@@ -70,11 +70,11 @@ format = "via [ $context](bold blue) "
 format = "via [ $version](bold purple) "
 
 [python]
-symbol = " "
+symbol = " "
 python_binary = "python3"
 
 [nodejs]
-format = "via [ $version](bold green) "
+format = "via [ $version](bold green) "
 disabled = true
 
 [ruby]
