@@ -9,6 +9,11 @@ local opts = { noremap = true, silent = true }
 keymap.set("n", "te", ":tabedit<Return>")
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
+--- Buffer keymap
+keymap.set("n", "sbl", ":BufferLineCycleNext<Return>", opts)
+keymap.set("n", "sbh", ":BufferLineCyclePrev<Return>", opts)
+keymap.set("n", "sbml", ":BufferLineMoveNext<Return>", opts)
+keymap.set("n", "sbmh", ":BufferLineMovePrev<Return>", opts)
 -- Split window
 keymap.set("n", "ss", ":split<Return>", opts)
 keymap.set("n", "sv", ":vsplit<Return>", opts)

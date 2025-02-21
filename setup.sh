@@ -8,13 +8,14 @@ if [ ! -d ~/.config ]; then
 fi
 
 echo "Linking Configuration File"
-ln -sf $PWD/.config/nvim ~/.config/nvim
-ln -sf $PWD/.config/starship.toml ~/.config/starship.toml
+echo "ln -s ${PWD}/.config/nvim ~/.config/nvim "
+ln -sf "${PWD}"/.config/nvim ~/.config
+ln -sf "${PWD}"/.config/starship.toml ~/.config/starship.toml
 
 # Link Tmux Configuration
 # If .tmux.conf exists, remove it
 
-ln -sf $PWD/.config/tmux/tmux.conf ~/.tmux.conf
+ln -sf "${PWD}"/.config/tmux/tmux.conf ~/.tmux.conf
 
 if [ ! -d ~/.tmux/plugins/tpm ]; then
     mkdir -p ~/.tmux/plugins
@@ -67,7 +68,7 @@ Linux)
     case "$_cpu" in
     x86_64)
         echo "Downlaoding Neovim"
-        curl -Lo $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+        curl -Lo $NVIM_ZIP https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
         sudo rm -rf /opt/nvim
         sudo tar -C /opt -xzf $NVIM_ZIP
         ;;
@@ -76,7 +77,7 @@ Linux)
         git clone https://github.com/neovim/neovim
         git checkout stable
         cd neovim && make CMAKE_BUILD_TYPE=RelWithDebInfo
-        sudo make install
+        sudo make install u
         ;;
     esac
     ;;
@@ -95,6 +96,7 @@ Darwin)
         sudo tar -C /opt -xzf $NVIM_ZIP
         ;;
     *)
+        p
         echo "Install Neovim using make"
         git clone https://github.com/neovim/neovim
         git checkout stable
@@ -129,10 +131,10 @@ zsh)
 esac
 
 # Export the current path to the configuration file
-echo "export PATH=\"\$PATH:/opt/nvim-linux64/bin\"" >>~/"$config_file"
+echo "export PATH=\"\$PATH:/opt/nvim-linux-x86_64/bin\"" >>~/"$config_file"
 
 # Source the configuration file to apply the changes immediately
-source ~/"$config_file"
+source ~/$config_file
 
 curl -sS https://starship.rs/install.sh | sh
 
